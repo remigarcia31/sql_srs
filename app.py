@@ -25,6 +25,16 @@ answer = """
 """
 solution = duckdb.sql(answer).df()
 
+st.write("Spaced Repetition System SQL practice")
+with st.sidebar:
+    option = st.selectbox(
+        "What would you like to review ?",
+        ("Join", "Group By", "Windows Functions"),
+        index=None,
+        placeholder="Select a theme...",
+    )
+    st.write("You selected:", option)
+
 st.header ("enter your code:")
 query = st.text_area (label="Votre code SQL ici", key="user _input")
 if query:
