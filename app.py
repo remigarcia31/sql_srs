@@ -20,7 +20,7 @@ csv2 = '''
 food_items = pd.read_csv(io.StringIO(csv2))
 
 answer = """
-    SELECT * FROM bevarages
+    SELECT * FROM beverages
     CROSS JOIN food_items
 """
 solution = duckdb.sql(answer).df()
