@@ -1,10 +1,10 @@
 # pylint: disable=missing-module-docstring
 
-import os
 import logging
+import os
+
 import duckdb
 import streamlit as st
-
 
 if "data" not in os.listdir():
     print("creating folder data")
