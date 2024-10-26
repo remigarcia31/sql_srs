@@ -62,7 +62,7 @@ if query:
 
     if len(result.columns) != len(
         solution_df.columns
-    ): # replace with try result = result[solution.columns]
+    ):  # replace with try result = result[solution.columns]
         st.write("Some columns are missing")
 
     try:
