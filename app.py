@@ -6,17 +6,21 @@ import os
 import duckdb
 import streamlit as st
 
-if "data" not in os.listdir():
+if "data" not in os.listdir():  # vérifie si le dossier data existe
     print("creating folder data")
-    logging.error(os.listdir())
-    logging.error("creating folder data")
-    os.mkdir("data")
+    logging.error(os.listdir())  # affiche les fichiers
+    logging.error("creating folder data")  # avertie de la création du dossier data
+    os.mkdir("data")  # création du dossier
 
-if "exercises_sql_tables.duckdb" not in os.listdir("data"):
-    exec(open("init_db.py").read())
+if "exercises_sql_tables.duckdb" not in os.listdir(
+    "data"
+):  # vérification de la présence de BD
+    exec(open("init_db.py").read())  # Si pas présente, execute le script int_bd
     # subprocess.run(["python", "init_db.py"])
 
-con = duckdb.connect(database="data/exercises_sql_tables.duckdb", read_only=False)
+con = duckdb.connect(
+    database="data/exercises_sql_tables.duckdb", read_only=False
+)  # connection à la BD
 
 
 def check_users_solution(user_query: str) -> None:
@@ -62,9 +66,11 @@ with st.sidebar:
         .df()
         .sort_values("last_reviewed")
         .reset_index(drop=True)
-    )
+    )  # affichage des exercices en fonction de la date de la dernière review
     st.write(exercise)
-    exercise_name = exercise.loc[0, "exercise_name"]
+    exercise_name = exercise.loc[
+        0, "exercise_name"
+    ]  # selection de l'exercie (last_reviewed plus ancien)
     with open(f"answers/{exercise_name}.sql", "r") as f:
         answer = f.read()
 
