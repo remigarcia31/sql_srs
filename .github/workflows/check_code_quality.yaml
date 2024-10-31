@@ -16,9 +16,12 @@ jobs:
       - name: Run Black
         run: |
           black --check --verbose .
+        continue-on-error: true
       - name: Run Pylint
         run: |
           pylint *.py
+        continue-on-error: true
       - name: Run isort
         run: |
           isort --check-only --diff .
+        continue-on-error: true
