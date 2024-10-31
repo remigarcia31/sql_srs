@@ -2,21 +2,26 @@
 
 import logging
 import os
+from datetime import date, timedelta
 
 import duckdb
 import streamlit as st
 
-if "data" not in os.listdir():
+if "data" not in os.listdir():  # vérifie si le dossier data existe
     print("creating folder data")
-    logging.error(os.listdir())
-    logging.error("creating folder data")
-    os.mkdir("data")
+    logging.error(os.listdir())  # affiche les fichiers
+    logging.error("creating folder data")  # avertie de la création du dossier data
+    os.mkdir("data")  # création du dossier
 
-if "exercises_sql_tables.duckdb" not in os.listdir("data"):
-    exec(open("init_db.py").read())
+if "exercises_sql_tables.duckdb" not in os.listdir(
+    "data"
+):  # vérification de la présence de BD
+    exec(open("init_db.py").read())  # Si pas présente, execute le script int_bd
     # subprocess.run(["python", "init_db.py"])
 
-con = duckdb.connect(database="data/exercises_sql_tables.duckdb", read_only=False)
+con = duckdb.connect(
+    database="data/exercises_sql_tables.duckdb", read_only=False
+)  # connection à la BD
 
 
 def check_users_solution(user_query: str) -> None:
@@ -62,9 +67,11 @@ with st.sidebar:
         .df()
         .sort_values("last_reviewed")
         .reset_index(drop=True)
-    )
+    )  # affichage des exercices en fonction de la date de la dernière review
     st.write(exercise)
-    exercise_name = exercise.loc[0, "exercise_name"]
+    exercise_name = exercise.loc[
+        0, "exercise_name"
+    ]  # selection de l'exercie (last_reviewed plus ancien)
     with open(f"answers/{exercise_name}.sql", "r") as f:
         answer = f.read()
 
@@ -78,6 +85,25 @@ form.form_submit_button("Submit")
 if query:
     check_users_solution(query)
 
+nb_days_to_review = [2, 7, 21]  # proposition nb jours pour revoir l'exo
+count_nb_days_to_review = 0
+cols_for_days = st.columns(
+    [len(nb_days_to_review), 1, len(nb_days_to_review)], vertical_alignment="center"
+)  # création des colonnes pour l'affichage
+
+for n_days in [2, 7, 21]:
+    with cols_for_days[count_nb_days_to_review]:
+        st.button(f"Revoir dans {n_days} jours")
+    count_nb_days_to_review += 1
+    next_review = date.today() + timedelta(days=n_days)
+    con.execute(
+        f"UPDATE memory_state SET last_reviewed = '{next_review}' WHERE exercise_name = '{exercise_name}'"
+    )
+    # st.rerun()
+
+if st.button("Reset"):
+    con.execute(f"UPDATE memory_state SET last_reviewed = '1970-01-01'")
+    st.rerun()
 
 tab2, tab3 = st.tabs(["Tables", "Solution"])
 with tab2:
