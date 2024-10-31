@@ -2,6 +2,7 @@
 
 import logging
 import os
+from datetime import date, timedelta
 
 import duckdb
 import streamlit as st
@@ -84,6 +85,25 @@ form.form_submit_button("Submit")
 if query:
     check_users_solution(query)
 
+nb_days_to_review = [2, 7, 21]  # proposition nb jours pour revoir l'exo
+count_nb_days_to_review = 0
+cols_for_days = st.columns(
+    [len(nb_days_to_review), 1, len(nb_days_to_review)], vertical_alignment="center"
+)  # création des colonnes pour l'affichage
+
+for n_days in [2, 7, 21]:
+    with cols_for_days[count_nb_days_to_review]:
+        st.button(f"Revoir dans {n_days} jours")
+    count_nb_days_to_review += 1
+    next_review = date.today() + timedelta(days=n_days)
+    con.execute(
+        f"UPDATE memory_state SET last_reviewed = '{next_review}' WHERE exercise_name = '{exercise_name}'"
+    )
+    # st.rerun()
+
+if st.button("Reset"):
+    con.execute(f"UPDATE memory_state SET last_reviewed = '1970-01-01'")
+    st.rerun()
 
 tab2, tab3 = st.tabs(["Tables", "Solution"])
 with tab2:
