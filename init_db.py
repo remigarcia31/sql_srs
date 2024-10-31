@@ -24,22 +24,22 @@ con.execute("CREATE TABLE IF NOT EXISTS memory_state AS SELECT * FROM memory_sta
 # ------------------------------------------------------------
 # CROSS JOIN EXERCISES
 # ------------------------------------------------------------
-CSV1 = """
+BEVERAGES = """
     beverage,price
     orange juice,2.5
     Expresso,2
     Tea,3
 """
-beverages = pd.read_csv(io.StringIO(CSV1))
+beverages = pd.read_csv(io.StringIO(BEVERAGES))
 con.execute("CREATE TABLE IF NOT EXISTS beverages AS SELECT * FROM beverages")
 
-CSV2 = """
+FOOD_ITEMS = """
     food_item,food_price
     cookie juice,2.5
     chocolatine,2
     muffin,3
 """
-food_items = pd.read_csv(io.StringIO(CSV2))
+food_items = pd.read_csv(io.StringIO(FOOD_ITEMS))
 con.execute("CREATE TABLE IF NOT EXISTS food_items AS SELECT * FROM food_items")
 
 
